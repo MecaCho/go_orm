@@ -1,0 +1,28 @@
+# IDE config and Log
+sync_blog
+swagger
+main
+web_backend*
+web_backend.*
+*.sh
+release
+./scripts/export_env.sh
+.idea/*.xml
+.idea/*.iml
+.idea/codeStyles/*.xml
+.idea/dataSources/*.xml
+*.log
+.sql
+.idea
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out

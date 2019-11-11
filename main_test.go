@@ -4,13 +4,12 @@ import (
 	"github.com/stretchr/testify/suite"
 	"github.com/jinzhu/gorm"
 	"go_orm/model"
-	"github.com/DATA-DOG/go-sqlmock"
-
 	"database/sql"
 	"github.com/stretchr/testify/require"
 	"regexp"
 	"fmt"
 	"testing"
+	"github.com/DATA-DOG/go-sqlmock"
 )
 
 type Suite struct {
@@ -129,6 +128,39 @@ func TestRepo_Get1(t *testing.T) {
 	// ret, err := db.Exec("SELECT * FROM `person` *")
 	if err != nil{
 		t.Error(err)
+	}
+	fmt.Println(ret)
+}
+
+func TestRepo_Create(t *testing.T) {
+	var (
+		id   = "test_id"
+		name = "test-name"
+	)
+
+	db, mock, _ := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherRegexp))
+	gorm.Open("mysql", db)
+
+
+	mock.ExpectBegin()
+	mock.ExpectExec("INSERT INTO `people` \\(`id`,`name`\\) VALUES \\(\\?\\,\\?\\)").
+		WithArgs(id, name).
+		WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectCommit()
+	// mock.ExpectQuery(regexp.QuoteMeta(
+	// 	`INSERT INTO "person" ("id","name")
+     //   VALUES ($1,$2) RETURNING "person"."id"`)).
+	// 	WithArgs(id, name).
+	// 	WillReturnRows(
+	// 	sqlmock.NewRows([]string{"id"}).AddRow(id))
+
+	DB, _ := gorm.Open("mysql", db)
+
+	repo := CreateRepository(DB)
+	ret := repo.Create("test_id", "test-name")
+	// ret, err := db.Exec("SELECT * FROM `person` *")
+	if ret != nil{
+		t.Error(ret)
 	}
 	fmt.Println(ret)
 }
